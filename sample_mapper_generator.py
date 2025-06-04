@@ -20,10 +20,16 @@ class SampleMapperGenerator:
 
     def _build_variant_editor(self):
         logger.debug('Building variant editor')
+        ttk.Label(self.root, text='Wpisz nazwy prób, użytych w doświadczeniu:').pack()
+        self.manual_entry = ttk.Entry(self.root, width=40)
+        self.manual_entry.pack(pady=5)
+
+        ttk.Label(self.root, text='Lub wygeneruj powtarzalne nazwy:').pack(pady=(10,0))
         editor_frame = ttk.Frame(self.root)
-        editor_frame.pack(padx=10, pady=10)
+        editor_frame.pack(padx=10, pady=5)
         self.editor_frame = editor_frame
         self._add_position()
+
         gen_button = ttk.Button(self.root, text='Generuj nazwy', command=self.generate_names)
         gen_button.pack(pady=5)
         self.names_list = tk.Listbox(self.root, height=10, width=40)
@@ -33,15 +39,23 @@ class SampleMapperGenerator:
 
     def _add_position(self):
         pos_index = len(self.positions)
-        frame = ttk.Frame(self.editor_frame)
-        frame.grid(row=0, column=pos_index, padx=5)
-        entry = ttk.Entry(frame, width=6)
+        frame = ttk.Frame(self.editor_frame, relief='groove', borderwidth=1)
+        frame.grid(row=0, column=pos_index, padx=5, pady=2, sticky='n')
+
+        lbl = ttk.Label(frame, text=f'Pozycja {pos_index+1}')
+        lbl.pack()
+
+        entry = ttk.Entry(frame, width=10)
         entry.pack(pady=2)
         self.positions.append([entry])
-        btn_add_variant = ttk.Button(frame, text='+ wariant', command=lambda f=frame: self._add_variant(f))
-        btn_add_variant.pack(pady=2)
-        btn_add_position = ttk.Button(frame, text='+ pozycja', command=self._add_position)
-        btn_add_position.pack(pady=2)
+
+        btn_frame = ttk.Frame(frame)
+        btn_frame.pack(pady=2)
+        btn_add_variant = ttk.Button(btn_frame, text='dodaj wariant', command=lambda f=frame: self._add_variant(f))
+        btn_add_variant.pack(side='left')
+        btn_add_position = ttk.Button(btn_frame, text='dodaj pozycję', command=self._add_position)
+        btn_add_position.pack(side='left', padx=2)
+
         self.position_frames.append(frame)
         logger.debug('Added position %s', pos_index)
 
@@ -54,15 +68,20 @@ class SampleMapperGenerator:
 
     def generate_names(self):
         logger.info('Generating names')
-        variants = []
-        for idx, variant_entries in enumerate(self.positions):
-            variant_list = [e.get().strip() for e in variant_entries if e.get().strip()]
-            if not variant_list:
-                messagebox.showerror('Błąd', f'Pozycja {idx+1} nie ma wariantów')
-                return
-            variants.append(variant_list)
-        self.names = [''.join(p) for p in product(*variants)]
-        logger.debug('Generated names: %s', self.names)
+        manual_text = self.manual_entry.get().strip()
+        if manual_text:
+            self.names = [n.strip() for n in manual_text.split(',') if n.strip()]
+            logger.debug('Manual names provided: %s', self.names)
+        else:
+            variants = []
+            for idx, variant_entries in enumerate(self.positions):
+                variant_list = [e.get().strip() for e in variant_entries if e.get().strip()]
+                if not variant_list:
+                    messagebox.showerror('Błąd', f'Pozycja {idx+1} nie ma wariantów')
+                    return
+                variants.append(variant_list)
+            self.names = [''.join(p) for p in product(*variants)]
+            logger.debug('Generated names from variants: %s', self.names)
         self.names_list.delete(0, tk.END)
         for name in self.names:
             self.names_list.insert(tk.END, name)
