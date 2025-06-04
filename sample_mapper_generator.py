@@ -40,11 +40,26 @@ class SampleMapperGenerator:
         gen_button = ttk.Button(self.root, text='Generuj nazwy', command=self.generate_names)
         gen_button.pack(pady=(5, 5))
 
-        # Listbox do wyświetlenia wygenerowanych nazw
+        # -----------------------
+        # Sekcja ręcznego dodawania pojedynczej nazwy
+        # -----------------------
+        manual_frame = ttk.Frame(self.root)
+        manual_frame.pack(pady=(0, 5))
+
+        self.manual_entry = ttk.Entry(manual_frame, width=30)
+        self.manual_entry.pack(side='left', padx=(0, 5))
+        add_manual_btn = ttk.Button(manual_frame, text='Dodaj nazwę', command=self.add_manual_name)
+        add_manual_btn.pack(side='left')
+
+        # -----------------------
+        # Listbox do wyświetlenia wygenerowanych lub ręcznie dodanych nazw
+        # -----------------------
         self.names_list = tk.Listbox(self.root, height=10, width=40)
         self.names_list.pack(pady=(0, 5))
 
-        # Ramka na opcje sortowania
+        # -----------------------
+        # Sekcja sortowania
+        # -----------------------
         sort_frame = ttk.Frame(self.root)
         sort_frame.pack(pady=(0, 5))
 
@@ -156,6 +171,31 @@ class SampleMapperGenerator:
         self._add_variant_to_frame(container_frame, variants_list)
         logger.debug('Added a variant to position; now %s variants.', len(variants_list))
 
+    def add_manual_name(self):
+        """
+        Pozwala ręcznie dodać pojedynczą nazwę do listy, bez generowania kombinacji.
+        """
+        name = self.manual_entry.get().strip()
+        if not name:
+            messagebox.showerror('Błąd', 'Wpisz nazwę przed dodaniem')
+            return
+        self.names.append(name)
+        self.variants_tuples.append((name,))  # zapis w formie 1-elementowej krotki
+        self.names_list.insert(tk.END, name)
+        self.manual_entry.delete(0, tk.END)
+        logger.debug('Manually added name: %s', name)
+
+        # Jeśli jeszcze nie aktywowany sortowanie, aktywuj i dodaj opcje „Pozycja 1”
+        if len(self.positions) == 1 and not self.sort_combo['values']:
+            self.sort_combo['values'] = ['Pozycja 1']
+            self.sort_combo.current(0)
+            self.sort_button.config(state='normal')
+        elif len(self.positions) > 1 and not self.sort_combo['values']:
+            options = [f"Pozycja {i+1}" for i in range(len(self.positions))]
+            self.sort_combo['values'] = options
+            self.sort_combo.current(0)
+            self.sort_button.config(state='normal')
+
     def generate_names(self):
         """
         Zbiera wszystkie warianty ze wszystkich pozycji i tworzy iloczyn kartezjański.
@@ -181,7 +221,7 @@ class SampleMapperGenerator:
             logger.debug('Position %s variants (including empty=%s): %s', idx + 1, allow_empty, values)
             all_variants.append(values)
 
-        # Zapisujemy krotki przed połączeniem w stringi
+        # Utwórz iloczyn kartezjański krotek
         self.variants_tuples = list(product(*all_variants))
         self.names = [''.join(combo) for combo in self.variants_tuples]
         logger.debug('Generated names: %s', self.names)
@@ -214,17 +254,21 @@ class SampleMapperGenerator:
         idx = sel  # indeks pozycji do sortowania (0-based)
         logger.debug('Sorting names by position %s', idx + 1)
 
-        # Sortuj krotki wg elementu na pozycji idx
-        self.variants_tuples.sort(key=lambda tpl: tpl[idx])
+        # Jeśli krotki mają różne długości (np. ręcznie dodane 1-elementowe),
+        # traktujemy brakujące indeksy jako '' (sortuje jako najmniej wartościowe)
+        def key_fn(tpl):
+            return tpl[idx] if idx < len(tpl) else ''
+
+        self.variants_tuples.sort(key=key_fn)
         self.names = [''.join(combo) for combo in self.variants_tuples]
         self._refresh_names_listbox()
 
     def create_mapping(self):
         """
-        Uruchamia okno mapowania, jeśli są wygenerowane nazwy.
+        Uruchamia okno mapowania, jeśli są wygenerowane lub ręcznie dodane nazwy.
         """
         if not self.names:
-            messagebox.showerror('Błąd', 'Najpierw wygeneruj nazwy')
+            messagebox.showerror('Błąd', 'Brak nazw do mapowania. Wygeneruj lub dodaj ręcznie.')
             return
         MappingWindow(self.names)
 
@@ -283,7 +327,6 @@ class MappingWindow:
         new_sample = self.sample_list.get(selection[0])
         old_sample = self.mapping.get(well)
 
-        # Nadpisujemy niezależnie od tego, czy była już jakaś wartość
         self.mapping[well] = new_sample
         self.buttons[well].config(text=new_sample)
 
@@ -331,6 +374,7 @@ class MappingWindow:
         messagebox.showinfo('Sukces', f'Zapisano mapping w {filename}')
         logger.info('Mapping saved')
         self.top.destroy()
+
 
 if __name__ == '__main__':
     app = SampleMapperGenerator()
