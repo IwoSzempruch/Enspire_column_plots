@@ -5,8 +5,8 @@ Ten projekt zawiera zestaw modułów upraszczających pracę z danymi z czytnika
 ## Moduły
 
 - `sample_mapper_generator.py` – kreator nazw prób oraz narzędzie do tworzenia pliku mapowania prób na studzienki.
-- `mappings_assigner.py` – przypisuje pliki mapowań do plików wejściowych.
-- `data_generator.py` – generuje uporządkowane dane na podstawie plików wejściowych i mapowania.
+- `mappings_assigner.py` – przypisuje pliki mapowań do plików wejściowych i zapisuje wynik w `mappings/assignment.csv`.
+- `data_generator.py` – generuje uporządkowane dane korzystając z `assignment.csv`.
 - `data_analyser.py` – oblicza statystyki i (opcjonalnie) stosunki między pomiarami.
 - `interactive_plot_selector.py` – prosty interaktywny wykres środków i odchyleń standardowych.
 - `main.py` – menu łączące działanie wszystkich modułów.

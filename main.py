@@ -43,21 +43,14 @@ def main_menu():
             pairs = assigner.run()
             if pairs:
                 copy_input_files([p[0] for p in pairs])
-                with open('mapping_pairs.txt', 'w', encoding='utf-8') as f:
-                    for p in pairs:
-                        f.write(f'{p[0]};{p[1]}\n')
         elif choice == '3':
-            if not os.path.exists('mapping_pairs.txt'):
-                print('Brak przypisanych plików. Najpierw użyj opcji 2.')
-                continue
-            with open('mapping_pairs.txt', encoding='utf-8') as f:
-                pairs = [line.strip().split(';') for line in f if line.strip()]
-            for input_file, mapping_file in pairs:
-                try:
-                    data_generator.generate_data(input_file, mapping_file)
-                except Exception as e:
-                    logger.exception('Błąd podczas generowania danych: %s', e)
-            print('Generowanie danych zakończone')
+            outputs = data_generator.generate_all_from_assignment()
+            if outputs:
+                print('Wygenerowano pliki:')
+                for o in outputs:
+                    print('  ', o)
+            else:
+                print('Brak przypisanych plików lub wystąpił błąd.')
         elif choice == '4':
             data_analyser.analyze_all()
             print('Analiza zakończona')

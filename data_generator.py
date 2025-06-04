@@ -4,8 +4,24 @@ from logger_setup import logger
 
 DATA_DIR = 'data'
 MAPPING_DIR = 'mappings'
+ASSIGNMENT_FILE = os.path.join(MAPPING_DIR, 'assignment.csv')
 
 os.makedirs(DATA_DIR, exist_ok=True)
+
+
+def load_assignments(path: str = ASSIGNMENT_FILE):
+    """Load input to mapping assignments from a file."""
+    assignments = []
+    if not os.path.exists(path):
+        logger.error('Assignment file %s not found', path)
+        return assignments
+    with open(path, newline='', encoding='utf-8') as f:
+        reader = csv.reader(f, delimiter=';')
+        for row in reader:
+            if len(row) >= 2:
+                assignments.append((row[0], row[1]))
+    logger.debug('Loaded assignments: %s', assignments)
+    return assignments
 
 
 def read_mapping(path):
@@ -69,6 +85,18 @@ def generate_data(input_file, mapping_file):
             writer.writerow([sample, plate_name, row_label, col_idx, well, meas, value])
     logger.info('Saved data to %s', out_path)
     return out_path
+
+
+def generate_all_from_assignment(path: str = ASSIGNMENT_FILE):
+    """Generate data for all pairs from the assignment file."""
+    outputs = []
+    for input_file, mapping_file in load_assignments(path):
+        try:
+            out = generate_data(input_file, mapping_file)
+            outputs.append(out)
+        except Exception as e:
+            logger.exception('Error generating data for %s: %s', input_file, e)
+    return outputs
 
 if __name__ == '__main__':
     print('Ten moduł powinien być użyty poprzez main.py')
