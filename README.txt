@@ -1,0 +1,1 @@
+Program umożłiwiający analizę danych z jednoktrotnych pomiarów kilku płytek na czytniku EnSpire
