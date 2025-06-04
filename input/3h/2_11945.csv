@@ -1,46 +1,46 @@
 Plate information 
 Plate,Repeat,Barcode,Chamber temperature at start,Chamber temperature at end,Ambient temperature at start,Ambient temperature at end,Meas,ScanX,ScanY,Measinfo,Kinetics,Measurement date,
-1,1,="",36.55,36.6,24.3,24.3,Meas A,0,0,De=1st Ex=Top Em=Top,1,6/4/2025 9:39:55 AM,
+1,1,="",36.65,36.7,23.5,23.5,Meas A,0,0,De=1st Ex=Top Em=Top,1,6/4/2025 1:11:02 PM,
 
 Background information
 Plate,Label,Result,Signal,Flashes/Time,Meastime,MeasInfo,
 
 Results for Meas A -  (RFU)
 ,01,02,03,04,05,06,07,08,09,10,11,12,
-A,,426,373,410,423,419,362,421,378,433,403,,
-B,,434,408,423,401,412,377,441,453,396,440,,
-C,,470,424,415,420,451,471,382,509,508,430,,
-D,,383,366,456,372,538,430,383,412,493,447,,
-E,,460,425,453,439,446,398,387,421,394,,,
-F,,407,405,384,395,455,510,459,452,422,,,
-G,,360,500,479,395,382,460,444,392,438,,,
-H,,479,452,401,422,410,428,446,435,479,,,
+A,,258,209,220,257,232,236,339,295,313,202,,
+B,,353,376,457,276,240,405,326,379,502,302,,
+C,,270,386,428,267,221,254,321,328,264,148,,
+D,,359,304,412,368,304,456,369,441,493,187,,
+E,,305,250,256,242,254,237,294,226,234,,,
+F,,342,435,535,447,316,381,403,455,526,,,
+G,,271,237,291,243,252,293,300,293,204,,,
+H,,420,592,473,318,498,469,428,730,480,,,
 
 Plate information 
 Plate,Repeat,Barcode,Chamber temperature at start,Chamber temperature at end,Ambient temperature at start,Ambient temperature at end,Meas,ScanX,ScanY,Measinfo,Kinetics,Measurement date,
-1,1,="",36.55,36.6,24.3,24.3,Meas B,0,0,De=1st Ex=Btm Em=N/A,1,6/4/2025 9:39:55 AM,
+1,1,="",36.65,36.7,23.5,23.5,Meas B,0,0,De=1st Ex=Btm Em=N/A,1,6/4/2025 1:11:02 PM,
 
 Background information
 Plate,Label,Result,Signal,Flashes/Time,Meastime,MeasInfo,
-1,Meas B,0,32513,10,00:00:00.000,De=1st Ex=Btm Em=N/A,
+1,Meas B,0,32440,10,00:00:00.000,De=1st Ex=Btm Em=N/A,
 
 Results for Meas B -  (A)
 ,01,02,03,04,05,06,07,08,09,10,11,12,
-A,,0.0450,0.0440,0.0430,0.0450,0.0430,0.0420,0.0440,0.0440,0.0450,0.0390,,
-B,,0.0430,0.0450,0.0430,0.0440,0.0450,0.0430,0.0430,0.0440,0.0440,0.0390,,
-C,,0.0450,0.0410,0.0410,0.0410,0.0400,0.0400,0.0420,0.0430,0.0410,0.0410,,
-D,,0.0440,0.0440,0.0440,0.0430,0.0420,0.0410,0.0440,0.0440,0.0450,0.0380,,
-E,,0.0430,0.0430,0.0420,0.0430,0.0410,0.0430,0.0410,0.0420,0.0430,,,
-F,,0.0460,0.0450,0.0450,0.0440,0.0430,0.0510,0.0430,0.0460,0.0450,,,
-G,,0.0430,0.0430,0.0430,0.0440,0.0450,0.0460,0.0430,0.0470,0.0440,,,
-H,,0.0450,0.0480,0.0470,0.0450,0.0450,0.0490,0.0470,0.0470,0.0490,,,
+A,,0.0450,0.0430,0.0410,0.0460,0.0460,0.0430,0.0420,0.0420,0.0430,0.0360,,
+B,,0.1860,0.2110,0.1720,0.1900,0.1700,0.1610,0.1540,0.1800,0.1690,0.0350,,
+C,,0.0430,0.0420,0.1550,0.0420,0.0450,0.0400,0.0450,0.0430,0.0440,0.0380,,
+D,,0.1710,0.1810,0.0440,0.1690,0.1480,0.1400,0.1450,0.1760,0.1600,0.0380,,
+E,,0.0410,0.0430,0.0420,0.0400,0.0430,0.0410,0.0430,0.0490,0.0410,,,
+F,,0.1720,0.1740,0.1720,0.1480,0.1010,0.1300,0.1590,0.1830,0.1840,,,
+G,,0.0400,0.0440,0.0440,0.0410,0.0460,0.0460,0.0410,0.0450,0.0410,,,
+H,,0.1780,0.1890,0.1860,0.1550,0.1520,0.1480,0.1880,0.1910,0.2050,,,
 
 
 Basic assay information 
-Assay ID: ,,,,11940
-Assay Started: ,,,,6/4/2025 9:37:46 AM
-Assay Finished: ,,,,6/4/2025 9:40:06 AM
-Assay Exported: ,,,,6/4/2025 9:40:08 AM
+Assay ID: ,,,,11945
+Assay Started: ,,,,6/4/2025 1:08:48 PM
+Assay Finished: ,,,,6/4/2025 1:11:13 PM
+Assay Exported: ,,,,6/4/2025 1:11:15 PM
 Assay Started By: ,,,,N/A
 Protocol ID: ,,,,100242
 Protocol Name: ,,,,1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS
@@ -120,7 +120,7 @@ Exc. filter,,,,N/A
 Using of excitation filter,,,,Top
 Excitation wavelength,,,,569 nm
 Emission wavelength,,,,594 nm
-Measurement height,,,,10.8 mm
+Measurement height,,,,9.7 mm
 Number of flashes,,,,500
 Number of flashes integrated,,,,500
 Flash power,,,,100 %
@@ -128,12 +128,12 @@ Excitation light,,,,100%
 Reference excitation light,,,,100%
 Emission light,,,,100%
 Reference AD gain,,,,2
-Reference signal,,,,9105554
-Last edited,,,,6/4/2025 9:27:00 AM
+Reference signal,,,,11038504
+Last edited,,,,6/4/2025 1:04:00 PM
 Last edited by,,,,EnSpire
 Factory preset,,,,No
 Optimizations
-  Measurement height,,,,5/29/2025 6:01:22 AM
+  Measurement height,,,,6/4/2025 1:03:40 AM
   Wavelength,,,,N/A
   Z',,,,N/A
   Flatfield,,,,N/A
@@ -141,7 +141,7 @@ Optimizations
 Meas ,,,,B
 Exc. filter,,,,N/A
 Excitation wavelength,,,,600 nm
-Measurement height,,,,10.8 mm
+Measurement height,,,,4 mm
 Number of flashes,,,,10
 Number of flashes integrated,,,,10
 Flash power,,,,100 %
@@ -154,7 +154,7 @@ Last edited by,,,,EnSpire
 Factory preset,,,,No
 Optimizations
   Baseline,,,,N/A
-  Measurement height,,,,5/29/2025 6:03:09 AM
+  Measurement height,,,,6/4/2025 1:06:01 AM
   Wavelength,,,,N/A
   Z',,,,N/A
 
