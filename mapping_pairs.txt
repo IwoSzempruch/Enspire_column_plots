@@ -1,0 +1,4 @@
+C:/Users/iwosz/OneDrive/Documents/GitHub/Enspire_column_plots/input/pomiary 1/1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS_11937.csv;mappings\Mapping_nieparzyste.csv
+C:/Users/iwosz/OneDrive/Documents/GitHub/Enspire_column_plots/input/pomiary 1/1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS_11938.csv;mappings\Mapping_parzyste_płytka_2.csv
+C:/Users/iwosz/OneDrive/Documents/GitHub/Enspire_column_plots/input/pomiary 1/1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS_11939.csv;mappings\Mapping_nieparzyste_płytka_1.csv
+C:/Users/iwosz/OneDrive/Documents/GitHub/Enspire_column_plots/input/pomiary 1/1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS_11940.csv;mappings\Mapping_parzyste.csv

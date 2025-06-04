@@ -66,7 +66,15 @@ class SampleMapperGenerator:
         self.sort_button = ttk.Button(sort_frame, text='Sortuj', command=self.sort_names, state='disabled')
         self.sort_button.pack(side='left', padx=(5, 0))
 
+        # -----------------------
+        # Przycisk "Otwórz mapping" (wczytuje mapping i otwiera okno Mapowanie prób)
+        # -----------------------
+        open_mapping_btn = ttk.Button(self.root, text='Otwórz mapping', command=self.load_mapping_and_open)
+        open_mapping_btn.pack(pady=(0, 5))
+
+        # -----------------------
         # Przycisk do otwarcia okna mapowania
+        # -----------------------
         mapping_button = ttk.Button(self.root, text='Stwórz mapping', command=self.create_mapping)
         mapping_button.pack(pady=(0, 10))
 
@@ -277,6 +285,67 @@ class SampleMapperGenerator:
         self.names = [''.join(combo) for combo in self.variants_tuples]
         self._refresh_names_entry()
 
+    def load_mapping_and_open(self):
+        """
+        Otwiera istniejący plik CSV z mappingiem, wczytuje zarówno nazwy próbek,
+        jak i przypisania do studzienek, następnie otwiera nowe okno Mapowanie prób.
+        """
+        filename = filedialog.askopenfilename(
+            title='Wybierz mapping CSV...',
+            defaultextension='.csv',
+            initialdir=MAPPING_DIR,
+            filetypes=[('CSV', '*.csv')]
+        )
+        if not filename:
+            return
+
+        try:
+            with open(filename, newline='', encoding='utf-8') as f:
+                reader = csv.reader(f)
+                rows = list(reader)
+        except Exception as e:
+            messagebox.showerror('Błąd', f'Nie udało się odczytać pliku:\n{e}')
+            return
+
+        # Parsujemy nagłówek: ['', '01','02',...,'12']
+        header = rows[0][1:]  # ['01','02',...,'12']
+
+        loaded_mapping = {}
+        loaded_names = set()
+        for row in rows[1:]:
+            if not row:
+                continue
+            r_letter = row[0]  # np. 'A'
+            for col_idx, cell in enumerate(row[1:], start=1):
+                name = cell.strip()
+                if name:
+                    c_num = header[col_idx - 1]  # '01', '02', ...
+                    well = f'{r_letter}{c_num}'
+                    loaded_mapping[well] = name
+                    loaded_names.add(name)
+
+        if not loaded_names:
+            messagebox.showinfo('Brak próbek', 'Plik nie zawiera żadnych nazw próbek.')
+            return
+
+        # Wczytujemy nazwy do self.names i self.variants_tuples
+        self.names = sorted(loaded_names)
+        self.variants_tuples = [(name,) for name in self.names]
+        self._refresh_names_entry()
+
+        # Przygotuj sortowanie: jeśli są pozycje, uwzględnij je
+        if not self.sort_combo['values']:
+            if len(self.positions) == 1:
+                self.sort_combo['values'] = ['Pozycja 1']
+            else:
+                opts = [f"Pozycja {i+1}" for i in range(len(self.positions))]
+                self.sort_combo['values'] = opts
+            self.sort_combo.current(0)
+            self.sort_button.config(state='normal')
+
+        # Otwórz okno mapowania z wczytanym mappingiem
+        MappingWindow(self.names, self.variants_tuples, loaded_mapping)
+
     def create_mapping(self):
         """
         Otwiera okno mapowania próbek, przekazując nazwy i krotki wariantów.
@@ -284,7 +353,7 @@ class SampleMapperGenerator:
         if not self.names:
             messagebox.showerror('Błąd', 'Brak nazw do mapowania. Wygeneruj lub dodaj ręcznie.')
             return
-        MappingWindow(self.names, self.variants_tuples)
+        MappingWindow(self.names, self.variants_tuples, {})
 
     def run(self):
         logger.info('Running SampleMapperGenerator GUI')
@@ -292,7 +361,7 @@ class SampleMapperGenerator:
 
 
 class MappingWindow:
-    def __init__(self, samples, variants_tuples):
+    def __init__(self, samples, variants_tuples, existing_mapping=None):
         logger.info('Opening MappingWindow')
         # Przechowujemy oryginalne kolejności
         self.original_samples = samples[:]
@@ -301,7 +370,8 @@ class MappingWindow:
         self.samples = samples[:]
         self.variants_tuples = variants_tuples[:]
 
-        self.mapping = {}  # { well: sample }
+        # Mapping: { well: sample }
+        self.mapping = existing_mapping.copy() if existing_mapping else {}
         self.top = tk.Toplevel()
         self.top.title('Mapowanie prób')
 
@@ -317,11 +387,10 @@ class MappingWindow:
         # Sekcja sortowania próbek
         # -----------------------
         sort_frame = ttk.Frame(self.top)
-        sort_frame.grid(row=0, column=0, columnspan=2, pady=(10, 5), padx=10, sticky='w')
+        sort_frame.grid(row=0, column=0, columnspan=3, pady=(10, 5), padx=10, sticky='w')
 
         ttk.Label(sort_frame, text="Sortuj próbki:").pack(side='left', padx=(0, 5))
         self.sort_samples_var = tk.StringVar()
-        # Obliczamy liczbę dostępnych pozycji z krotki (wersje wildcard)
         num_positions = len(self.variants_tuples[0]) if self.variants_tuples else 1
         sort_values = ['Oryginalne', 'Alfabetycznie'] + [f"Pozycja {i+1}" for i in range(num_positions)]
         self.sort_samples_combo = ttk.Combobox(
@@ -366,8 +435,16 @@ class MappingWindow:
                 btn.bind('<Button-3>', lambda e, w=well: self.unassign_sample(w))
                 self.buttons[well] = btn
 
+        # Jeśli wczytano istniejący mapping, ustaw przyciski od razu
+        for well, sample in self.mapping.items():
+            if well in self.buttons:
+                self.buttons[well].config(text=sample, bg='lightblue')
+
+        # Po ustawieniu mappingu: podświetlamy próbki, które są użyte
+        self.clear_highlights()
+
         # -----------------------
-        # Przycisk Zapisz mapping
+        # Przycisk "Zapisz mapping"
         # -----------------------
         save_btn = ttk.Button(self.top, text='Zapisz mapping', command=self.save_mapping)
         save_btn.grid(row=2, column=0, columnspan=2, pady=(0, 10))
@@ -509,7 +586,7 @@ class MappingWindow:
         """
         Zapisuje mapping do CSV:
         Nagłówek: puste + kolumny 01–12
-        Wiersze A–H z wartościami lub pustym stringiem.
+        Wiersze A–H z wartości lub pustym stringiem.
         """
         if len(self.mapping) != 96:
             if not messagebox.askyesno(
