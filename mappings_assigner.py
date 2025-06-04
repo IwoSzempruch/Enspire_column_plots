@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import os
+import csv
 from logger_setup import logger
 
 MAPPING_DIR = 'mappings'
@@ -73,6 +74,16 @@ class MappingAssigner:
             messagebox.showerror('Błąd', 'Brak plików do przypisania')
             return
         logger.info('Mappings assigned: %s', self.pairs)
+        assignment_path = os.path.join(MAPPING_DIR, 'assignment.csv')
+        try:
+            with open(assignment_path, 'w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f, delimiter=';')
+                writer.writerows(self.pairs)
+            logger.info('Saved assignment file to %s', assignment_path)
+        except OSError as e:
+            logger.exception('Failed to write assignment file: %s', e)
+            messagebox.showerror('Błąd', f'Nie można zapisać pliku {assignment_path}')
+            return
         self.root.quit()
 
     def run(self):
