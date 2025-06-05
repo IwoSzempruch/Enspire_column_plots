@@ -1,0 +1,195 @@
+Plate information 
+Plate,Repeat,Barcode,Chamber temperature at start,Chamber temperature at end,Ambient temperature at start,Ambient temperature at end,Meas,ScanX,ScanY,Measinfo,Kinetics,Measurement date,
+1,1,="",24.55,24.55,22.7,22.3,Meas A,0,0,De=1st Ex=Top Em=Top,1,6/4/2025 7:08:23 PM,
+
+Background information
+Plate,Label,Result,Signal,Flashes/Time,Meastime,MeasInfo,
+
+Results for Meas A -  (RFU)
+,01,02,03,04,05,06,07,08,09,10,11,12,
+A,,318,248,386,451,292,457,345,363,329,317,,
+B,,728,423,1024,761,278,903,697,696,1007,304,,
+C,,389,384,1394,362,374,329,288,326,381,221,,
+D,,729,568,337,866,259,798,678,609,984,402,,
+E,,518,385,388,300,406,158,393,393,460,,,
+F,,1035,1056,1364,1050,989,1334,888,1013,1168,,,
+G,,444,522,482,408,398,454,442,554,337,,,
+H,,1008,2439,1416,1000,1954,1061,894,2040,1166,,,
+
+Plate information 
+Plate,Repeat,Barcode,Chamber temperature at start,Chamber temperature at end,Ambient temperature at start,Ambient temperature at end,Meas,ScanX,ScanY,Measinfo,Kinetics,Measurement date,
+1,1,="",24.55,24.55,22.7,22.3,Meas B,0,0,De=1st Ex=Btm Em=N/A,1,6/4/2025 7:08:23 PM,
+
+Background information
+Plate,Label,Result,Signal,Flashes/Time,Meastime,MeasInfo,
+1,Meas B,0,33091,10,00:00:00.000,De=1st Ex=Btm Em=N/A,
+
+Results for Meas B -  (A)
+,01,02,03,04,05,06,07,08,09,10,11,12,
+A,,0.1780,0.2460,0.1720,0.1990,0.2190,0.1890,0.1650,0.1970,0.1920,0.0370,,
+B,,0.3960,0.4350,0.3580,0.3800,0.3820,0.4420,0.3890,0.4120,0.3920,0.0350,,
+C,,0.1790,0.1710,0.3900,0.1620,0.1990,0.1650,0.2030,0.1930,0.1600,0.0380,,
+D,,0.3030,0.3950,0.1160,0.3920,0.4210,0.4260,0.4050,0.4130,0.4300,0.0360,,
+E,,0.1300,0.1570,0.1420,0.1160,0.0780,0.0970,0.1620,0.1600,0.1570,,,
+F,,0.3790,0.3840,0.3960,0.4020,0.2950,0.2890,0.4290,0.4230,0.4520,,,
+G,,0.1180,0.1640,0.1480,0.1070,0.1040,0.1200,0.1200,0.1830,0.1300,,,
+H,,0.3670,0.3700,0.3950,0.3920,0.4270,0.2300,0.4070,0.4050,0.4040,,,
+
+
+Basic assay information 
+Assay ID: ,,,,11954
+Assay Started: ,,,,6/4/2025 7:06:09 PM
+Assay Finished: ,,,,6/4/2025 7:08:34 PM
+Assay Exported: ,,,,6/4/2025 7:08:36 PM
+Assay Started By: ,,,,N/A
+Protocol ID: ,,,,100242
+Protocol Name: ,,,,1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS
+Serial#: ,,,,="23000566"
+
+
+
+Protocol information
+Protocol:
+Protocol name,,,,1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS
+Number of assay repeats,,,,1
+Start assay repeat each,,,,N/A
+Number of plate repeats,,,,1
+Start plate repeat each,,,,N/A
+Mode of measurement,,,,By Rows
+Rotated plate,,,,No
+Soft move,,,,No
+Protocol notes,,,, 
+
+Plate type:
+Name of the plate type,,,,96 General
+Number of rows,,,,8
+Number of columns,,,,12
+Number of the wells in the plate,,,,96
+Height of the plate,,,,14.35 mm
+Diameter of the well,,,,6.5 mm
+Volume of the well,,,,300 µl
+Optimized,,,,N/A
+
+Coordinates of corners:
+96 General
+14.38 mm x------------------------------------------------------ x 113.38 mm
+11.24 mm                                                           11.24 mm
+
+14.38 mm x------------------------------------------------------ x 113.38 mm
+74.24 mm                                                           74.24 mm
+
+Platemap:
+Plate,,,,1
+
+,01,02,03,04,05,06,07,08,09,10,11,12,
+A,     ,UNK2 ,UNK3 ,UNK4 ,UNK5 ,UNK6 ,UNK7 ,UNK8 ,UNK9 ,UNK10,UNK74,     
+B,     ,UNK11,UNK12,UNK13,UNK14,UNK15,UNK16,UNK17,UNK18,UNK19,UNK75,     
+C,     ,UNK20,UNK21,UNK22,UNK23,UNK24,UNK25,UNK26,UNK27,UNK28,UNK76,     
+D,     ,UNK29,UNK30,UNK31,UNK32,UNK33,UNK34,UNK35,UNK36,UNK37,UNK77,     
+E,     ,UNK38,UNK39,UNK40,UNK41,UNK42,UNK43,UNK44,UNK45,UNK46,     ,     
+F,     ,UNK47,UNK48,UNK49,UNK50,UNK51,UNK52,UNK53,UNK54,UNK55,     ,     
+G,     ,UNK56,UNK57,UNK58,UNK59,UNK60,UNK61,UNK62,UNK63,UNK64,     ,     
+H,     ,UNK65,UNK66,UNK67,UNK68,UNK69,UNK70,UNK71,UNK72,UNK73,     ,     
+
+ UNK - Unknown
+
+Calculations:
+No calculations.
+
+Auto export parameters:
+Export format,,,,Plate5
+Picture,,,,No
+Add plate number to the file name,,,,Yes
+Each plate to separate file,,,,No
+Field separator to use,,,,System
+File name format,,,,<DefaultDataFolder>\<Date>\<ProtocolName>_<AssayID>.csv
+Exported data,,,,MeasA:Result MeasB:Result
+
+Operations:
+Plate 1
+  Measurement
+    Meas,,,,A
+    Tech,,,,Fluorescence
+  Measurement
+    Meas,,,,B
+    Tech,,,,Absorbance
+
+Measurements:
+Meas ,,,,A
+Exc. filter,,,,N/A
+Using of excitation filter,,,,Top
+Excitation wavelength,,,,569 nm
+Emission wavelength,,,,594 nm
+Measurement height,,,,9.7 mm
+Number of flashes,,,,500
+Number of flashes integrated,,,,500
+Flash power,,,,100 %
+Excitation light,,,,100%
+Reference excitation light,,,,100%
+Emission light,,,,100%
+Reference AD gain,,,,2
+Reference signal,,,,11038504
+Last edited,,,,6/4/2025 1:04:00 PM
+Last edited by,,,,EnSpire
+Factory preset,,,,No
+Optimizations
+  Measurement height,,,,6/4/2025 1:03:40 AM
+  Wavelength,,,,N/A
+  Z',,,,N/A
+  Flatfield,,,,N/A
+
+Meas ,,,,B
+Exc. filter,,,,N/A
+Excitation wavelength,,,,600 nm
+Measurement height,,,,4 mm
+Number of flashes,,,,10
+Number of flashes integrated,,,,10
+Flash power,,,,100 %
+Excitation light,,,,100%
+Reference excitation light,,,,100%
+Reference AD gain,,,,1
+Reference signal,,,,7573
+Last edited,,,,6/4/2025 9:26:37 AM
+Last edited by,,,,EnSpire
+Factory preset,,,,No
+Optimizations
+  Baseline,,,,N/A
+  Measurement height,,,,6/4/2025 1:06:01 AM
+  Wavelength,,,,N/A
+  Z',,,,N/A
+
+Filters:
+Monochromator cutoff 230,,,,140
+Filter polarization,,,,None
+Description,,,,X230co Longpass=230nm  Tmin=90%
+Used with
+Last edited,,,,1/1/2011
+Last edited by,,,,Installation
+Factory preset,,,,Yes
+
+Monochromator cutoff 360,,,,141
+Filter polarization,,,,None
+Description,,,,X360co Longpass=360nm  Tmin=90%
+Used with
+Last edited,,,,1/1/2011
+Last edited by,,,,Installation
+Factory preset,,,,Yes
+
+Monochromator cutoff 585,,,,142
+Filter polarization,,,,None
+Description,,,,X585co Longpass=585nm  Tmin=75%
+Used with
+Last edited,,,,1/1/2011
+Last edited by,,,,Installation
+Factory preset,,,,Yes
+
+Instrument:
+Serial number,,,,23000566
+Nickname,,,,EnSpire
+
+
+
+
+
+
+Exported with EnSpire Workstation version 4.10.3005.1440

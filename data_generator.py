@@ -27,7 +27,8 @@ ASSIGNMENT_FILE = os.path.join(MAPPING_DIR, 'assignment.csv')
 def load_assignments(path: str = ASSIGNMENT_FILE):
     """
     Wczytuje z pliku assignment.csv pary (ścieżka_do_pliku_wejściowego, ścieżka_do_pliku_mapującego).
-    Plik powinien być kodowany UTF-8 (lub systemowym), a pola rozdzielone średnikami.
+    Plik powinien być kodowany UTF-8, a pola rozdzielone średnikami.
+    Normalizuje ścieżki, aby działało zarówno na Windows, jak i na Linuxie.
     """
     assignments = []
     if not os.path.exists(path):
@@ -43,7 +44,9 @@ def load_assignments(path: str = ASSIGNMENT_FILE):
             infile = row[0].strip()
             mapfile = row[1].strip()
             if infile and mapfile:
-                assignments.append((infile, mapfile))
+                infile_norm = os.path.normpath(infile)
+                mapfile_norm = os.path.normpath(mapfile)
+                assignments.append((infile_norm, mapfile_norm))
             else:
                 logger.warning('Pominięto wiersz %d w %s – puste ścieżki', idx, path)
 
@@ -54,9 +57,9 @@ def load_assignments(path: str = ASSIGNMENT_FILE):
 def read_mapping(path: str) -> dict:
     """
     Wczytuje mapowanie z pliku CSV. Zakłada, że:
-    - Pierwszy wiersz: pusty cell + "01","02",...,"12"
+    - Pierwszy wiersz: pusta komórka w pierwszej kolumnie, a w kolejnych nagłówki "01","02",...,"12"
     - Kolejne wiersze: litera_wiersza, nazwa_próbki_kolumna_01, nazwa_próbki_kolumna_02, ..., nazwa_próbki_kolumna_12
-    Zwraca słownik: {'A01': 'Sample1', 'A02': 'Sample2', ...}
+    Zwraca słownik tylko dla niepustych próbek: {'A01': '1M_CAA', 'A02': '2M_CAA', ...}
     """
     if not os.path.exists(path):
         logger.error('Plik mapowania nie istnieje: %s', path)
@@ -76,12 +79,15 @@ def read_mapping(path: str) -> dict:
                 if not row or len(row) < 2:
                     continue
                 row_label = row[0].strip()
+                if not row_label:
+                    continue
                 for col_idx, sample in enumerate(row[1:], start=0):
                     if col_idx >= len(cols):
                         break
                     col_name = cols[col_idx].strip()
                     sample_name = sample.strip()
-                    if row_label and col_name:
+                    # Dodajemy tylko, gdy sample_name nie jest pusty
+                    if row_label and col_name and sample_name:
                         well = f'{row_label}{col_name}'
                         mapping[well] = sample_name
     except Exception as e:
@@ -104,7 +110,6 @@ def parse_input(path: str) -> list:
         logger.error('Plik wejściowy nie istnieje: %s', path)
         return results
 
-    # Używamy CP1250, bo często pliki Windowsowe tak są kodowane
     encoding_used = 'cp1250'
     try:
         with open(path, encoding=encoding_used, errors='replace') as f:
@@ -117,22 +122,18 @@ def parse_input(path: str) -> list:
     while i < len(lines):
         line = lines[i].strip()
         if line.startswith('Results for'):
-            # Wyciągamy nazwę pomiaru, np. "Meas A"
             try:
                 meas = line.split('Results for')[1].split('-')[0].strip()
             except Exception:
                 meas = line
             logger.debug('Znaleziono pomiar: %s w pliku %s (linia %d)', meas, path, i+1)
 
-            # Przejdź do wiersza z nagłówkiem kolumn (pierwszy wiersz nagłówka: ",01,02,...,12,")
             i += 1
             if i >= len(lines):
                 break
             if not lines[i].startswith(','):
-                # Jeśli nie trafiliśmy na wiersz zaczynający się przecinkiem, pomińmy
                 continue
 
-            # Kolejne 8 linii to wiersze od A do H
             for row_offset in range(1, 9):
                 if i + row_offset >= len(lines):
                     break
@@ -141,8 +142,7 @@ def parse_input(path: str) -> list:
                 if len(parts) < 2:
                     continue
                 row_label = parts[0].strip()
-                # Wartości dla kolumn 01–12 to parts[1]..parts[12]
-                values = parts[1:13]
+                values = parts[1:13]  # kolumny 01–12
                 for c_idx, val in enumerate(values, start=1):
                     if val and val.strip():
                         try:
@@ -152,7 +152,6 @@ def parse_input(path: str) -> list:
                             continue
                         results.append((row_label, c_idx, meas, numeric_value))
 
-            # Przesuń indeks za te 8 wierszy
             i += 9
             continue
 
@@ -165,6 +164,7 @@ def parse_input(path: str) -> list:
 def generate_data(input_file: str, mapping_file: str) -> str:
     """
     Generuje plik CSV z połączonych danych z pliku wejściowego i mapowania.
+    Plik wyjściowy zapisywany jest w strukturze data/[ścieżka_z_input_po_input/...].
     Zwraca ścieżkę do wygenerowanego pliku lub pusty string w razie błędu.
     """
     if not os.path.exists(input_file):
@@ -188,9 +188,31 @@ def generate_data(input_file: str, mapping_file: str) -> str:
 
     plate_name = os.path.splitext(os.path.basename(input_file))[0]
     out_filename = f'{plate_name}_data.csv'
-    out_path = os.path.join(DATA_DIR, out_filename)
 
-    os.makedirs(DATA_DIR, exist_ok=True)
+    input_dir = os.path.dirname(input_file)
+    normalized_input_dir = os.path.normpath(input_dir)
+    out_dir = DATA_DIR
+
+    rel_dir = None
+    try:
+        base_input = os.path.normpath('input')
+        if normalized_input_dir.startswith(base_input + os.sep) or normalized_input_dir == base_input:
+            rel_dir = os.path.relpath(normalized_input_dir, base_input)
+        else:
+            rel_dir = os.path.basename(normalized_input_dir)
+    except Exception:
+        rel_dir = os.path.basename(normalized_input_dir)
+
+    if rel_dir and rel_dir != os.curdir:
+        out_dir = os.path.join(DATA_DIR, rel_dir)
+
+    try:
+        os.makedirs(out_dir, exist_ok=True)
+    except Exception as e:
+        logger.error('Nie udało się utworzyć katalogu %s: %s', out_dir, e)
+        return ''
+
+    out_path = os.path.join(out_dir, out_filename)
 
     try:
         with open(out_path, 'w', newline='', encoding='utf-8') as fout:
@@ -205,7 +227,7 @@ def generate_data(input_file: str, mapping_file: str) -> str:
         return ''
 
     logger.info('Zapisano dane do: %s', out_path)
-    print(f'✅ Wygenerowano dane z {os.path.basename(input_file)} → {os.path.join(DATA_DIR, out_filename)}')
+    print(f'✅ Wygenerowano dane z {os.path.basename(input_file)} → {out_path}')
     return out_path
 
 
@@ -237,8 +259,8 @@ def generate_all_from_assignment(path: str = ASSIGNMENT_FILE) -> list:
 if __name__ == '__main__':
     """
     Skrypt uruchamiamy w ten sposób:
-        python data_generator.py
+        python data-generator.py
     lub
-        python3 data_generator.py
+        python3 data-generator.py
     """
     generate_all_from_assignment()

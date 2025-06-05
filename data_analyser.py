@@ -33,18 +33,20 @@ def write_data(path, rows, fieldnames):
         logger.error("Nie udało się zapisać %s: %s", path, e)
 
 
-def find_raw_files():
+def find_raw_files(dir_path):
     """
-    Find all input CSV files in DATA_DIR ending with '_data.csv'.
+    Find all input CSV files in a given directory ending with '_data.csv'.
     Skip any existing merged or ratios outputs.
     """
     raw_files = []
-    for fname in os.listdir(DATA_DIR):
+    for fname in os.listdir(dir_path):
         if not fname.lower().endswith('_data.csv'):
             continue
         if fname in {MERGED_FILENAME, RATIOS_FILENAME} or fname.endswith('_analysed.csv'):
             continue
-        raw_files.append(os.path.join(DATA_DIR, fname))
+        full_path = os.path.join(dir_path, fname)
+        if os.path.isfile(full_path):
+            raw_files.append(full_path)
     return sorted(raw_files)
 
 
@@ -147,20 +149,17 @@ def compute_multi_measurement_stats(rows):
         r['Std'] = f"{std:.4f}"
 
 
-def compute_and_write_ratios(rows, measurements):
+def compute_and_write_ratios(subdir_path, rows, measurements, num, den):
     """
-    Zapytaj użytkownika, które pomiary mają być licznikiem, a które mianownikiem,
-    oblicz ratio dla każdej pary (Sample, Plate, Row, Column, Well),
-    oblicz Mean i Std dla Ratio na poziomie Sample,
-    i zapisz wynik do pliku 'ratios.csv'.
+    Oblicz ratio dla wybranych pomiarów (num, den) dla wszystkich wierszy,
+    a następnie policz Ratio_Mean i Ratio_Std na poziomie Sample i zapisz wynik do pliku 'ratios.csv' w danym podkatalogu.
     """
-    num = input(f"Podaj nazwę pomiaru, który ma być licznikiem spośród {measurements}: ").strip()
-    den = input(f"Podaj nazwę pomiaru, który ma być mianownikiem spośród {measurements}: ").strip()
-
+    # Sprawdź, czy podano poprawne nazwy pomiarów
     if num not in measurements or den not in measurements:
         logger.error("Niepoprawne nazwy pomiarów: %s, %s", num, den)
         return
 
+    # Zbuduj mapę wartości mianownika na podstawie klucza (Sample, Plate, Row, Column, Well)
     denom_map = {}
     for r in rows:
         if r['Measurement'] == den:
@@ -197,6 +196,7 @@ def compute_and_write_ratios(rows, measurements):
             'Nominator_Well': r['Well'],
             'Nominator_Measurement': num,
             'Nominator_Value': f"{nom_value:.4f}",
+            'Denominator_Sample': r['Sample'],
             'Denominator_Plate': r['Plate'],
             'Denominator_Well': r['Well'],
             'Denominator_Measurement': den,
@@ -210,6 +210,7 @@ def compute_and_write_ratios(rows, measurements):
         logger.error("Brak poprawnych par (licznik/mianownik) do obliczenia stosunków.")
         return
 
+    # Oblicz Ratio_Mean i Ratio_Std dla każdego Sample
     ratio_stats = {}
     for sample, vals in ratio_by_sample.items():
         mean = statistics.mean(vals)
@@ -221,78 +222,109 @@ def compute_and_write_ratios(rows, measurements):
         r['Ratio_Mean'] = f"{mean:.4f}"
         r['Ratio_Std'] = f"{std:.4f}"
 
+    # Przygotuj nazwy kolumn w pliku ratios.csv
     fieldnames = [
         'Sample',
         'Nominator_Plate', 'Nominator_Well', 'Nominator_Measurement', 'Nominator_Value',
-        'Denominator_Plate', 'Denominator_Well', 'Denominator_Measurement', 'Denominator_Value',
+        'Denominator_Sample', 'Denominator_Plate', 'Denominator_Well', 'Denominator_Measurement', 'Denominator_Value',
         'Ratio', 'Ratio_Mean', 'Ratio_Std'
     ]
 
-    out_path = os.path.join(DATA_DIR, RATIOS_FILENAME)
+    out_path = os.path.join(subdir_path, RATIOS_FILENAME)
     if os.path.exists(out_path):
-        logger.info("Plik %s już istnieje i zostanie nadpisany.", RATIOS_FILENAME)
+        logger.info("Plik %s już istnieje i zostanie nadpisany w %s.", RATIOS_FILENAME, subdir_path)
     write_data(out_path, ratio_rows, fieldnames)
 
 
 def analyze_all():
     """
     Główna funkcja:
-    1. Znajduje wszystkie pliki kończące się na '_data.csv'.
-    2. Scala je w jeden data_merged.csv.
-    3. Jeśli jest jeden typ pomiaru: oblicza Mean/Std per Sample.
-       Jeśli są dwa typy pomiaru: oblicza Mean/Std per (Sample, Measurement), zapisuje merged,
-       a następnie pyta, czy wygenerować ratios.csv.
+    Dla każdego podkatalogu w katalogu DATA_DIR:
+      1. Znajduje wszystkie pliki kończące się na '_data.csv'.
+      2. Scala je w jeden data_merged.csv w danym podkatalogu.
+      3. Jeśli jest jeden typ pomiaru: oblicza Mean/Std per Sample.
+         Jeśli są dwa typy pomiaru: oblicza Mean/Std per (Sample, Measurement), zapisuje merged,
+         a następnie (raz tylko) pyta, czy wygenerować ratios.csv i jakie pomiary użyć (należy wybrać spośród wszystkich podkatalogów).
     """
-    raw_files = find_raw_files()
-    if not raw_files:
-        logger.error("Brak plików źródłowych do analizy w katalogu '%s'.", DATA_DIR)
-        return
+    # Zmienna do przechowania, czy już zapytano użytkownika o liczenie ratio
+    ratio_choice_asked = False
+    ratio_enabled = False
+    num = den = None  # Nazwy pomiarów dla licznika i mianownika, gdy ratio_enabled=True
 
-    merged_path = os.path.join(DATA_DIR, MERGED_FILENAME)
-    if os.path.exists(merged_path):
-        logger.info("Plik %s już istnieje i zostanie nadpisany.", MERGED_FILENAME)
+    # Iteruj po każdym podkatalogu w DATA_DIR
+    for subdir_name in os.listdir(DATA_DIR):
+        subdir_path = os.path.join(DATA_DIR, subdir_name)
+        if not os.path.isdir(subdir_path):
+            continue
 
-    # Scal wszystkie dane
-    merged_rows, base_fieldnames = merge_data(raw_files)
-    if not merged_rows:
-        return
+        raw_files = find_raw_files(subdir_path)
+        if not raw_files:
+            logger.warning("Brak plików źródłowych w podkatalogu '%s'; pomijam.", subdir_path)
+            continue
 
-    # Zbierz unikalne typy pomiarów
-    measurement_types = sorted({r['Measurement'] for r in merged_rows})
-    logger.info("Znalezione typy pomiarów: %s", measurement_types)
+        merged_path = os.path.join(subdir_path, MERGED_FILENAME)
+        if os.path.exists(merged_path):
+            logger.info("Plik %s już istnieje i zostanie nadpisany w %s.", MERGED_FILENAME, subdir_path)
 
-    # Utwórz kopię danych przed usunięciem '_float_value' do obliczenia ratio
-    ratio_source_rows = [r.copy() for r in merged_rows]
+        # Scal wszystkie dane w tym podkatalogu
+        merged_rows, base_fieldnames = merge_data(raw_files)
+        if not merged_rows:
+            continue
 
-    # Przygotuj początkowy zestaw kolumn do zapisania (bez '_float_value')
-    initial_fieldnames = [fn for fn in base_fieldnames if fn != '_float_value']
+        # Zbierz unikalne typy pomiarów w tym podkatalogu
+        measurement_types = sorted({r['Measurement'] for r in merged_rows})
+        logger.info("W podkatalogu '%s' znaleziono typy pomiarów: %s", subdir_path, measurement_types)
 
-    if len(measurement_types) == 1:
-        compute_single_measurement_stats(merged_rows)
-        strip_auxiliary(merged_rows)
+        # Przygotuj dane do ewentualnego liczenia ratio
+        ratio_source_rows = [r.copy() for r in merged_rows]
 
-        final_fieldnames = initial_fieldnames[:]
-        if 'Mean' not in final_fieldnames:
-            final_fieldnames.extend(['Mean', 'Std'])
-        write_data(merged_path, merged_rows, final_fieldnames)
+        # Przygotuj listę kolumn do zapisu (bez '_float_value')
+        initial_fieldnames = [fn for fn in base_fieldnames if fn != '_float_value']
 
-    elif len(measurement_types) == 2:
-        compute_multi_measurement_stats(merged_rows)
-        strip_auxiliary(merged_rows)
+        if len(measurement_types) == 1:
+            # Jeden typ pomiaru: compute Single Measurement Stats
+            compute_single_measurement_stats(merged_rows)
+            strip_auxiliary(merged_rows)
 
-        final_fieldnames = initial_fieldnames[:]
-        if 'Mean' not in final_fieldnames:
-            final_fieldnames.extend(['Mean', 'Std'])
-        write_data(merged_path, merged_rows, final_fieldnames)
+            final_fieldnames = initial_fieldnames[:]
+            if 'Mean' not in final_fieldnames:
+                final_fieldnames.extend(['Mean', 'Std'])
+            write_data(merged_path, merged_rows, final_fieldnames)
 
-        choice = input("Znaleziono dwa typy pomiarów. Czy chcesz obliczyć stosunki? (t/n): ").strip().lower()
-        if choice == 't':
-            compute_and_write_ratios(ratio_source_rows, measurement_types)
+        elif len(measurement_types) == 2:
+            # Dwa typy pomiaru: compute Multi Measurement Stats
+            compute_multi_measurement_stats(merged_rows)
+            strip_auxiliary(merged_rows)
+
+            final_fieldnames = initial_fieldnames[:]
+            if 'Mean' not in final_fieldnames:
+                final_fieldnames.extend(['Mean', 'Std'])
+            write_data(merged_path, merged_rows, final_fieldnames)
+
+            # Pytamy użytkownika tylko raz o liczenie stosunków i wybór pomiarów
+            if not ratio_choice_asked:
+                choice = input(
+                    "Znaleziono dwa typy pomiarów w przynajmniej jednym podkatalogu. "
+                    "Czy chcesz obliczyć stosunki dla wszystkich podkatalogów? (t/n): "
+                ).strip().lower()
+                ratio_choice_asked = True
+                if choice == 't':
+                    ratio_enabled = True
+                    num = input(f"Podaj nazwę pomiaru, który ma być licznikiem spośród {measurement_types}: ").strip()
+                    den = input(f"Podaj nazwę pomiaru, który ma być mianownikiem spośród {measurement_types}: ").strip()
+                else:
+                    ratio_enabled = False
+
+            if ratio_enabled:
+                compute_and_write_ratios(subdir_path, ratio_source_rows, measurement_types, num, den)
+            else:
+                logger.info("Pominięto generowanie pliku %s w %s.", RATIOS_FILENAME, subdir_path)
+
         else:
-            logger.info("Pominięto generowanie pliku ratios.csv.")
-
-    else:
-        logger.error("Nieobsługiwana liczba typów pomiarów: %d. Oczekiwano 1 lub 2.", len(measurement_types))
+            logger.error(
+                "W podkatalogu '%s' nieobsługiwana liczba typów pomiarów: %d. Oczekiwano 1 lub 2.",
+                subdir_path, len(measurement_types)
+            )
 
 
 if __name__ == '__main__':

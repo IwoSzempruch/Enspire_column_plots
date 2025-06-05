@@ -1,0 +1,195 @@
+Plate information 
+Plate,Repeat,Barcode,Chamber temperature at start,Chamber temperature at end,Ambient temperature at start,Ambient temperature at end,Meas,ScanX,ScanY,Measinfo,Kinetics,Measurement date,
+1,1,="",24.4,24.4,22.8,22.8,Meas A,0,0,De=1st Ex=Top Em=Top,1,6/4/2025 4:11:26 PM,
+
+Background information
+Plate,Label,Result,Signal,Flashes/Time,Meastime,MeasInfo,
+
+Results for Meas A -  (RFU)
+,01,02,03,04,05,06,07,08,09,10,11,12,
+A,,608,1160,385,478,901,378,802,1510,383,60,,
+B,,37,85,111,28,29,36,148,143,67,72,,
+C,,537,475,414,910,599,459,839,626,647,6,,
+D,,59,116,154,17,150,64,53,137,27,68,,
+E,,526,341,305,448,126,411,745,284,541,,,
+F,,123,5,116,169,34,131,42,65,29,,,
+G,,552,392,339,592,50,348,631,181,343,,,
+H,,76,89,40,46,41,26,204,115,79,,,
+
+Plate information 
+Plate,Repeat,Barcode,Chamber temperature at start,Chamber temperature at end,Ambient temperature at start,Ambient temperature at end,Meas,ScanX,ScanY,Measinfo,Kinetics,Measurement date,
+1,1,="",24.4,24.4,22.8,22.8,Meas B,0,0,De=1st Ex=Btm Em=N/A,1,6/4/2025 4:11:26 PM,
+
+Background information
+Plate,Label,Result,Signal,Flashes/Time,Meastime,MeasInfo,
+1,Meas B,0,33019,10,00:00:00.000,De=1st Ex=Btm Em=N/A,
+
+Results for Meas B -  (A)
+,01,02,03,04,05,06,07,08,09,10,11,12,
+A,,0.4190,0.4110,0.4310,0.4190,0.4720,0.4510,0.4610,0.4730,0.4460,0.0380,,
+B,,0.0710,0.0880,0.0630,0.0640,0.0510,0.0530,0.0710,0.0810,0.0540,0.0390,,
+C,,0.4030,0.4170,0.4120,0.4100,0.3880,0.4580,0.4460,0.4520,0.4440,0.0380,,
+D,,0.0810,0.0820,0.0840,0.0550,0.0490,0.0550,0.0750,0.0760,0.0580,0.0380,,
+E,,0.3880,0.4270,0.4110,0.4380,0.4330,0.4270,0.4420,0.4320,0.3650,,,
+F,,0.0840,0.0850,0.0910,0.0800,0.1070,0.0910,0.0720,0.0870,0.0770,,,
+G,,0.3780,0.4030,0.4110,0.4860,0.4250,0.4180,0.4240,0.4450,0.4030,,,
+H,,0.0790,0.0790,0.0740,0.0810,0.0960,0.0780,0.0810,0.0870,0.0780,,,
+
+
+Basic assay information 
+Assay ID: ,,,,11949
+Assay Started: ,,,,6/4/2025 4:09:10 PM
+Assay Finished: ,,,,6/4/2025 4:11:37 PM
+Assay Exported: ,,,,6/4/2025 4:11:40 PM
+Assay Started By: ,,,,N/A
+Protocol ID: ,,,,100242
+Protocol Name: ,,,,1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS
+Serial#: ,,,,="23000566"
+
+
+
+Protocol information
+Protocol:
+Protocol name,,,,1time-mScarlet-DO NOT MODIFY IF ITS NOT YOURS
+Number of assay repeats,,,,1
+Start assay repeat each,,,,N/A
+Number of plate repeats,,,,1
+Start plate repeat each,,,,N/A
+Mode of measurement,,,,By Rows
+Rotated plate,,,,No
+Soft move,,,,No
+Protocol notes,,,, 
+
+Plate type:
+Name of the plate type,,,,96 General
+Number of rows,,,,8
+Number of columns,,,,12
+Number of the wells in the plate,,,,96
+Height of the plate,,,,14.35 mm
+Diameter of the well,,,,6.5 mm
+Volume of the well,,,,300 µl
+Optimized,,,,N/A
+
+Coordinates of corners:
+96 General
+14.38 mm x------------------------------------------------------ x 113.38 mm
+11.24 mm                                                           11.24 mm
+
+14.38 mm x------------------------------------------------------ x 113.38 mm
+74.24 mm                                                           74.24 mm
+
+Platemap:
+Plate,,,,1
+
+,01,02,03,04,05,06,07,08,09,10,11,12,
+A,     ,UNK2 ,UNK3 ,UNK4 ,UNK5 ,UNK6 ,UNK7 ,UNK8 ,UNK9 ,UNK10,UNK74,     
+B,     ,UNK11,UNK12,UNK13,UNK14,UNK15,UNK16,UNK17,UNK18,UNK19,UNK75,     
+C,     ,UNK20,UNK21,UNK22,UNK23,UNK24,UNK25,UNK26,UNK27,UNK28,UNK76,     
+D,     ,UNK29,UNK30,UNK31,UNK32,UNK33,UNK34,UNK35,UNK36,UNK37,UNK77,     
+E,     ,UNK38,UNK39,UNK40,UNK41,UNK42,UNK43,UNK44,UNK45,UNK46,     ,     
+F,     ,UNK47,UNK48,UNK49,UNK50,UNK51,UNK52,UNK53,UNK54,UNK55,     ,     
+G,     ,UNK56,UNK57,UNK58,UNK59,UNK60,UNK61,UNK62,UNK63,UNK64,     ,     
+H,     ,UNK65,UNK66,UNK67,UNK68,UNK69,UNK70,UNK71,UNK72,UNK73,     ,     
+
+ UNK - Unknown
+
+Calculations:
+No calculations.
+
+Auto export parameters:
+Export format,,,,Plate5
+Picture,,,,No
+Add plate number to the file name,,,,Yes
+Each plate to separate file,,,,No
+Field separator to use,,,,System
+File name format,,,,<DefaultDataFolder>\<Date>\<ProtocolName>_<AssayID>.csv
+Exported data,,,,MeasA:Result MeasB:Result
+
+Operations:
+Plate 1
+  Measurement
+    Meas,,,,A
+    Tech,,,,Fluorescence
+  Measurement
+    Meas,,,,B
+    Tech,,,,Absorbance
+
+Measurements:
+Meas ,,,,A
+Exc. filter,,,,N/A
+Using of excitation filter,,,,Top
+Excitation wavelength,,,,569 nm
+Emission wavelength,,,,594 nm
+Measurement height,,,,9.7 mm
+Number of flashes,,,,500
+Number of flashes integrated,,,,500
+Flash power,,,,100 %
+Excitation light,,,,100%
+Reference excitation light,,,,100%
+Emission light,,,,100%
+Reference AD gain,,,,2
+Reference signal,,,,11038504
+Last edited,,,,6/4/2025 1:04:00 PM
+Last edited by,,,,EnSpire
+Factory preset,,,,No
+Optimizations
+  Measurement height,,,,6/4/2025 1:03:40 AM
+  Wavelength,,,,N/A
+  Z',,,,N/A
+  Flatfield,,,,N/A
+
+Meas ,,,,B
+Exc. filter,,,,N/A
+Excitation wavelength,,,,600 nm
+Measurement height,,,,4 mm
+Number of flashes,,,,10
+Number of flashes integrated,,,,10
+Flash power,,,,100 %
+Excitation light,,,,100%
+Reference excitation light,,,,100%
+Reference AD gain,,,,1
+Reference signal,,,,7573
+Last edited,,,,6/4/2025 9:26:37 AM
+Last edited by,,,,EnSpire
+Factory preset,,,,No
+Optimizations
+  Baseline,,,,N/A
+  Measurement height,,,,6/4/2025 1:06:01 AM
+  Wavelength,,,,N/A
+  Z',,,,N/A
+
+Filters:
+Monochromator cutoff 230,,,,140
+Filter polarization,,,,None
+Description,,,,X230co Longpass=230nm  Tmin=90%
+Used with
+Last edited,,,,1/1/2011
+Last edited by,,,,Installation
+Factory preset,,,,Yes
+
+Monochromator cutoff 360,,,,141
+Filter polarization,,,,None
+Description,,,,X360co Longpass=360nm  Tmin=90%
+Used with
+Last edited,,,,1/1/2011
+Last edited by,,,,Installation
+Factory preset,,,,Yes
+
+Monochromator cutoff 585,,,,142
+Filter polarization,,,,None
+Description,,,,X585co Longpass=585nm  Tmin=75%
+Used with
+Last edited,,,,1/1/2011
+Last edited by,,,,Installation
+Factory preset,,,,Yes
+
+Instrument:
+Serial number,,,,23000566
+Nickname,,,,EnSpire
+
+
+
+
+
+
+Exported with EnSpire Workstation version 4.10.3005.1440
